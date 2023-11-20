@@ -50,7 +50,6 @@ def analyze_websites_from_csv(csv_path):
 
     return df
 
-# Example usage with a CSV file containing a 'Website' column
 csv_file_path = 'df_1_copy.csv'
 result_df = analyze_websites_from_csv(csv_file_path)
 
