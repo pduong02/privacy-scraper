@@ -1,6 +1,7 @@
 import http.cookiejar
 import urllib.request
 import csv
+import pandas as pd
 
 def analyze_cookies(domain):
     try:
@@ -22,15 +23,15 @@ def analyze_cookies(domain):
             else:
                 first = first+1
         
-        return [first+third, first, third]
+        return [first, third]
 
     except:
-        return ['error']
+        return ['NA','NA']
 
 #websites = ['https://www.google.com']
 
 #website data
-csv_file = 'df_1_copy.csv'
+csv_file = 'finalurls.csv'
 
 cookie_data = {}
 
@@ -39,11 +40,6 @@ with open(csv_file, 'r', newline='', encoding='utf-8') as file:
     #skip column names (header row)
     next(read, None)
     for entry in read:
-        site = entry[1]
-        domain = "https://" + entry[2]
+        domain = "https://" + entry[0]
         num_cookies = analyze_cookies(domain)
-        cookie_data[site] = num_cookies
-
-
-for x,y in cookie_data.items():
-    print(x, y)
+        cookie_data[domain[8:]] = num_cookies
