@@ -2,26 +2,36 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException, NoSuchElementException
+import pandas as pd
 
 chrome_driver_path = ChromeDriverManager().install()
 chrome_service = Service(chrome_driver_path)
 options = webdriver.ChromeOptions()
-options.add_argument('--ignore-certificate-errors')
 driver = webdriver.Chrome(options=options, service=chrome_service)
 
+ad_counts = []
 def get_ad_count(url):
     try:
         driver.get(url)
+        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '//*[contains(text(), "ad")]')))
         ads = driver.find_elements(By.XPATH, '//*[contains(text(), "ad")]')
         print(f"Ad count on {url}: {len(ads)}")
+        ad_counts.append(len(ads))
+    except TimeoutException as e:
+        ad_counts.append(0)
+    except NoSuchElementException as e:
+        ad_counts.append(0)
 
-    finally:
-        pass  # No need to quit the driver here, as it will be done outside the function
+df = pd.read_csv('finalurls.csv')
+websites = df['Domain Name']
+for website in websites:
+    website = "https://" + website
+    get_ad_count(website)
 
-with open('sketchystreamingsites.txt', 'r') as file:
-    for line in file:
-        line = "https://" + line.strip('\n')  # Remove newline characters
-        get_ad_count(line)
+df['Ad Counts'] = ad_counts
+df.to_csv('finalurls.csv', index = False)
 
-# Quit the driver after processing all URLs
 driver.quit()
