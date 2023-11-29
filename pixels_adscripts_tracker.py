@@ -65,7 +65,7 @@ def analyze_website(url):
 
 def analyze_websites_from_csv(csv_path):
     # Read the CSV into a DataFrame
-    df = pd.read_excel(csv_path)
+    df = pd.read_csv(csv_path)
 
     # Prepend 'https://' to the 'Domain Name' column
     df['URL'] = 'https://' + df['Domain Name']
@@ -80,11 +80,11 @@ def analyze_websites_from_csv(csv_path):
     return result_df
 
 # Example usage with a CSV file containing a 'Domain Name' column
-csv_file_path = 'thirdpartyrequests.xlsx'
+csv_file_path = 'finalurls_withCookies.csv'
 result_df = analyze_websites_from_csv(csv_file_path)
 
 # Display the resulting DataFrame
 print(result_df)
 
-result_df.to_csv('thirdpartyrequests2.csv', index=False)
+result_df.to_csv('final_data.csv', index=False)
 
